@@ -1,0 +1,36 @@
+<div layout="column" layout-fill>
+  <mat-toolbar color="primary" class="bgc-blue-900">
+    <mat-toolbar-row>
+      <span>Login</span>
+    </mat-toolbar-row>
+  </mat-toolbar>
+  <div class="mat-content" layout-padding flex>
+    <div layout-gt-xs="row" layout-align-gt-xs="center start" class="margin">
+      <div flex-gt-xs="50">
+        <mat-card tdMediaToggle="gt-xs" [mediaClasses]="['push-top-lg']">
+          <mat-card-title><span><img src="assets/icons/logobank.svg" width="250" style="padding-left: 35%;"></span></mat-card-title>
+          <mat-card-subtitle><b>Aplicación WEB DCIN</b></mat-card-subtitle>
+          <mat-divider></mat-divider>
+          <mat-card-content>
+            <form #loginForm="ngForm">
+              <div layout="row">
+                <mat-form-field flex> 
+                  <input matInput #userElement #userControl="ngModel" placeholder="Usuario" type="text" maxlength="30" name="username" [(ngModel)]="username" required>
+                  <span matPrefix><mat-icon>person</mat-icon></span>
+                  <mat-hint align="start">
+                    <span [hidden]="!userControl.errors?.required || userControl.pristine" class="tc-red-600">Required</span>
+                  </mat-hint>
+                  <mat-hint align="end">{{userElement.value.length}} / 30</mat-hint>
+                </mat-form-field>
+              </div>
+            </form>
+          </mat-card-content>
+          <mat-divider></mat-divider>
+          <mat-card-actions layout="row">
+            <button flex mat-raised-button color="accent" [disabled]="!loginForm.form.valid" (click)="login()">Ingresar</button>
+          </mat-card-actions>
+        </mat-card>
+      </div>
+    </div>    
+  </div>
+</div>

@@ -1,0 +1,31 @@
+{
+    "menu": {
+      "Name": "Inicio",
+      "Order": 1,
+      "Path": "",
+      "Text": "Inicio",
+      "Filter": null,
+      "Childs": [
+        {
+          "Name": "Administrar Estructura",
+          "Order": 1,
+          "Path": "/estructura",
+          "Text": "account_balance",
+          "Filter": null,
+          "Childs": []
+        },
+        {
+          "Name": "Visualización",
+          "Order": 2,
+          "Path": "/visualizacion",
+          "Text": "add_chart",
+          "Filter": null,
+          "Childs": []
+        }
+      ]
+    },
+    "perfil": "Usuario",
+    "area": [
+        {"area":  ""}
+    ]
+}

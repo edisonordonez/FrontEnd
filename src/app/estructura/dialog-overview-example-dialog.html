@@ -1,0 +1,78 @@
+<h1 mat-dialog-title>Editar Nodo</h1>
+<div mat-dialog-content>
+  <div layout="row">
+    <mat-form-field flex> 
+      <mat-label>Nombre</mat-label>
+      <input matInput [(ngModel)]="data.name">
+    </mat-form-field>
+  </div>
+
+  <div layout="row">
+    <mat-form-field flex> 
+      <mat-label>Cuenta</mat-label>
+      <input matInput [(ngModel)]="data.cuenta">
+    </mat-form-field>
+  </div>
+
+  <div layout="row">
+    <mat-form-field flex>
+      <mat-label>Tipo de Nodo</mat-label>
+      <mat-select [(ngModel)]="data.id_tipo" name="id_tipo" required>
+        <mat-option *ngFor="let tipos of tiposnodo" [value]="tipos.id_tipo">
+          {{tipos.tipo}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <div layout="row" *ngIf="!data.childs">
+    <mat-form-field flex>
+      <mat-label>Numerales SAF</mat-label>
+      <mat-select [(ngModel)]="data.idnumeralsaf" name="idnumeralsaf" required>
+        <mat-option [value]="0">No Aplica</mat-option>
+        <mat-option *ngFor="let saf of ArrayNumeralesSAF" [value]="saf.idnumeral">
+          {{saf.NombreNum}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <div layout="row" *ngIf="!data.childs">
+    <mat-form-field flex>
+      <mat-label>Numerales CCO</mat-label>
+      <mat-select [(ngModel)]="data.idnumeralcco" name="idnumeralcco" required>
+        <mat-option [value]="0">No Aplica</mat-option>
+        <mat-option *ngFor="let cco of ArrayNumeralesSAF" [value]="cco.idnumeral">
+          {{cco.NombreNum}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <div layout="row" *ngIf="validarChilds()">
+    <mat-card flex-gt-sm>
+      <mat-card-title>Formulación Vertical</mat-card-title>
+      <ng-template let-nodes let-last="last" let-index="index"  ngFor [ngForOf]="data.childs">
+        <td-expansion-panel [label]="nodes.item">
+          <mat-card-content class="push-bottom-none">
+            <div layout="row">
+              <mat-form-field flex>
+                <mat-label>Operación</mat-label>
+                <mat-select [(ngModel)]="data.formulacion" name="nodes.item" required>
+                  <mat-option [value]="0">No Aplica</mat-option>
+                  <mat-option [value]="1">Suma (+)</mat-option>
+                  <mat-option [value]="2">Resta (-)</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </mat-card-content>
+        </td-expansion-panel>
+      </ng-template>
+    </mat-card>
+  </div>
+  
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">Cancelar</button>
+  <button mat-button [mat-dialog-close]="data" cdkFocusInitial>Ok</button>
+</div>

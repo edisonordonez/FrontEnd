@@ -1,0 +1,238 @@
+<td-layout-nav logo="assets:logobank" navigationRoute="/">
+    <button mat-icon-button td-menu-button tdLayoutToggle>
+      <mat-icon>menu</mat-icon>
+    </button>
+    <div td-toolbar-content layout="row" layout-align="center center" flex>
+      <span>Parametrización de Estructura</span>
+      <span flex></span>
+    </div>
+    <mat-card class="push-bottom-xxl" tdMediaToggle="gt-xs" [mediaClasses]="['push']">
+      <td-steps mode="horizontal" linear="true">
+        
+        <td-step #step1 label="Estructura" sublabel="Datos Básicos" [state]="stateStep1"  [active]="true">
+            <form #balanzaForm="ngForm">
+              <mat-card flex-gt-sm>
+                <mat-card-title>Agregue los datos básicos</mat-card-title>
+                  <mat-card-content class="push-bottom-none">
+    
+                    <div layout="row">
+                      <mat-form-field flex> 
+                        <input matInput
+                                #Nombre_EstructuraElement
+                                #Nombre_EstructuraControl="ngModel"
+                                type="text" 
+                                placeholder="Nombre" 
+                                [(ngModel)]="Nombre_Estructura" 
+                                name="Nombre_Estructura"
+                                maxlength="100"
+                                required>
+                        <mat-hint align="start">
+                          <span [hidden]="Nombre_EstructuraControl.pristine" class="tc-red-600">
+                            <span [hidden]="!Nombre_EstructuraControl.hasError('required')">Requerido</span>
+                          </span>
+                        </mat-hint>
+                        <mat-hint align="end">{{Nombre_EstructuraElement.value.length}} / 100</mat-hint>
+                      </mat-form-field>
+                    </div>
+                    
+                    <div layout-gt-sm="column2">
+                        <div flex>
+                          <mat-form-field flex>
+                              <input
+                                  #Fecha_InicioElement 
+                                  #Fecha_InicioControl="ngModel"
+                                  name="Fecha_Inicio"
+                                  matInput [matDatepicker]="picker" 
+                                  placeholder="Fecha Inicio Vigencia"
+                                  [(ngModel)]="Fecha_Inicio"
+                                  format="dd/MM/yyyy">
+                              <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                              <mat-datepicker #picker></mat-datepicker>
+                          </mat-form-field>
+                        </div>
+            
+                        <div flex>
+                          <mat-form-field>
+                              <input
+                                  #Fecha_FinElement 
+                                  #Fecha_FinControl="ngModel"
+                                  name="Fecha_Fin"
+                                  matInput [matDatepicker]="picker2" 
+                                  placeholder="Fecha Fin Vigencia"
+                                  [(ngModel)]="Fecha_Fin"
+                                  [min]="Fecha_Inicio"
+                                  format="dd/MM/yyyy"> 
+                              <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                              <mat-datepicker #picker2></mat-datepicker>
+                          </mat-form-field> 
+                        </div>
+            
+                    </div>
+
+                    <div layout="row"  class="push-top">
+                        <mat-slide-toggle
+                          #Cb_EsOficialElement
+                          #Cb_EsOficialControl
+                          [(ngModel)]="Cb_EsOficial2"
+                          name="Cb_EsOficial"
+                        >
+                          Es Oficial
+                        </mat-slide-toggle>
+                      </div>
+
+                  </mat-card-content>
+                
+              </mat-card>
+              <ng-template td-step-actions>
+                <button mat-raised-button [disabled]="!balanzaForm.form.valid" color="accent" matStepperNext
+                        (click)="toggleCompleteStep1(); step2.disabled = disabled; step2.active = true; ">Siguiente
+                </button>
+              </ng-template>
+            </form>
+          </td-step>    
+         
+        <td-step #step2 label="Agregar Nodos" sublabel="Nodos y configuraciones" [state]="stateStep2"  [active]="deactive" [disabled]="enable">           
+          <div layout-gt-sm>
+            <mat-card flex-gt-sm>
+              <mat-card-title>Agregar Nodos</mat-card-title>
+              <mat-card-subtitle>{{Nombre_Estructura}}</mat-card-subtitle>
+              <mat-card-content class="push-bottom-none">
+              <form #addForm="ngForm">
+                <div layout="row" layout-align="start center" class="pad-sm">
+    
+                  <div layout="row" class="example-list" flex>
+                      <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
+                          <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle matTreeNodePadding class="example-box" >
+                            <button mat-icon-button disabled></button>
+                            <mat-checkbox class="checklist-leaf-node"
+                                          [ngClass]="{'drop-above': dragNodeExpandOverArea === 'above' && dragNodeExpandOverNode === node,
+                                                      'drop-below': dragNodeExpandOverArea === 'below' && dragNodeExpandOverNode === node,
+                                                      'drop-center': dragNodeExpandOverArea === 'center' && dragNodeExpandOverNode === node}"
+                                          [checked]="checklistSelection.isSelected(node)"
+                                          (change)="checklistSelection.toggle(node);"
+                                          draggable="true"
+                                          (dragstart)="handleDragStart($event, node);"
+                                          (dragover)="handleDragOver($event, node);"
+                                          (drop)="handleDrop($event, node);"
+                                          (dragend)="handleDragEnd($event);">{{node.item}}</mat-checkbox>
+                            <button mat-icon-button (click)="addNewItem(node)"><mat-icon>add</mat-icon></button>
+                            <button mat-icon-button (click)="openDialog(node)"><mat-icon>edit</mat-icon></button>
+                            <button mat-icon-button (click)="deleteItem2(node)"><mat-icon>delete</mat-icon></button>
+                          </mat-tree-node>
+                        
+                          <mat-tree-node *matTreeNodeDef="let node; when: hasNoContent" matTreeNodePadding class="example-box" >
+                            <button mat-icon-button disabled></button>
+                            <mat-form-field>
+                              <input matInput #itemValue placeholder="Nuevo nodo">
+                            </mat-form-field>
+                            <button style="display: none;" id="buttonclick" mat-button (click)="saveNode(node, itemValue.value)">Guardar</button>
+                          </mat-tree-node>
+                        
+                          <mat-tree-node *matTreeNodeDef="let node; when: hasChild" matTreeNodePadding class="example-box" >
+                            <button mat-icon-button matTreeNodeToggle
+                                    [attr.aria-label]="'toggle ' + node.filename">
+                              <mat-icon class="mat-icon-rtl-mirror">
+                                {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+                              </mat-icon>
+                            </button>
+                            <mat-checkbox [ngClass]="{'drop-above': dragNodeExpandOverArea === 'above' && dragNodeExpandOverNode === node,
+                                                      'drop-below': dragNodeExpandOverArea === 'below' && dragNodeExpandOverNode === node,
+                                                      'drop-center': dragNodeExpandOverArea === 'center' && dragNodeExpandOverNode === node}"
+                                          draggable="true"
+                                          (dragstart)="handleDragStart($event, node);"
+                                          (dragover)="handleDragOver($event, node);"
+                                          (drop)="handleDrop($event, node);"
+                                          (dragend)="handleDragEnd($event);"
+                                          [checked]="descendantsAllSelected(node)"
+                                          [indeterminate]="descendantsPartiallySelected(node)"
+                                          (change)="todoItemSelectionToggle(node)">{{node.item}}</mat-checkbox>
+                            <button mat-icon-button (click)="addNewItem(node)"><mat-icon>add</mat-icon></button>
+                            <button mat-icon-button (click)="openDialog(node)"><mat-icon>edit</mat-icon></button>
+                            <button mat-icon-button (click)="deleteItem2(node)"><mat-icon>delete</mat-icon></button>
+                          </mat-tree-node>
+                      </mat-tree>
+                      <span #emptyItem></span>
+                  </div>                          
+    
+                </div>
+              </form>
+              </mat-card-content>
+            </mat-card>
+            
+          </div>
+          <ng-template td-step-actions>
+            <button mat-raised-button color="primary" 
+              (click)="toggleCompleteStep2(); step1.active = true;">Anterior
+            </button>
+            <button mat-raised-button [disabled]="!balanzaForm.form.valid" color="accent" 
+                    (click)="toggleCompleteStep2(); step3.disabled = disabled; step3.active = true;">Siguiente
+            </button>
+          </ng-template>
+        </td-step>
+  
+        <td-step #step3 label="Resumen" sublabel="Resumen de la Estructura" [state]="stateStep3" [disabled]="enable">
+          <mat-card flex-gt-sm>
+            <mat-card-title>{{Nombre_Estructura}}</mat-card-title>
+            <mat-card-subtitle>Resumén de la estructura creada</mat-card-subtitle>
+            <mat-divider></mat-divider>
+            <mat-list>
+              <h3 matSubheader>Información Básica</h3>
+              <mat-list-item>
+                <mat-icon matListAvatar>access_time</mat-icon>
+                <h4 matLine>{{Fecha_Inicio | date:'yyyy-MM-dd'}}</h4>
+                <p matLine>Fecha Inicio de Vigencia</p>
+              </mat-list-item>
+              <mat-divider matInset></mat-divider>
+              <mat-list-item>
+                <mat-icon matListAvatar>today</mat-icon>
+                <h4 matLine>{{Fecha_Fin | date:'yyyy-MM-dd'}}</h4>
+                <p matLine>Fecha Fin de Vigencia</p>
+              </mat-list-item>
+              <mat-divider matInset></mat-divider>
+              <mat-list-item>
+                <mat-icon matListAvatar>vpn_key</mat-icon>
+                <h4 matLine>{{Cb_EsOficial ? 'SI' : 'NO'}}</h4>
+                <p matLine>Es Oficial</p>
+              </mat-list-item>
+              <mat-divider></mat-divider>
+              <h3 matSubheader>Nodos</h3>
+              <mat-list-item>
+                <mat-icon matListAvatar>access_time</mat-icon>
+                <h4 matLine>2</h4>
+                <p matLine>N° de Nodos de primer nivel</p>
+              </mat-list-item>
+              <mat-divider matInset></mat-divider>
+              <mat-list-item>
+                <mat-icon matListAvatar>today</mat-icon>
+                <h4 matLine>10</h4>
+                <p matLine>N° de Nodos de segundo nivel</p>
+              </mat-list-item>
+              <mat-list-item>
+                <mat-icon matListAvatar>today</mat-icon>
+                <h4 matLine>30</h4>
+                <p matLine>N° de Nodos de tercer nivel</p>
+              </mat-list-item>
+              <mat-list-item>
+                <mat-icon matListAvatar>today</mat-icon>
+                <h4 matLine>45</h4>
+                <p matLine>N° de Nodos de cuarto nivel</p>
+              </mat-list-item>
+            </mat-list>
+            <mat-divider></mat-divider>
+          </mat-card>
+  
+          <ng-template td-step-actions>
+            <button mat-raised-button color="primary" 
+              (click)="toggleCompleteStep2(); step2.active = true;">Anterior
+            </button>
+            <button mat-raised-button [disabled]="!balanzaForm.form.valid || !balanzaForm.form.hasError" color="accent" 
+              (click)="save()">Guardar
+            </button> 
+            <button mat-button (click)="goBack()" >Salir sin Guardar</button>
+          </ng-template>
+        </td-step>
+  
+      </td-steps>  
+    </mat-card>
+  </td-layout-nav>
+  
